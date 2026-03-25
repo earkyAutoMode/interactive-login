@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动登录页 - Interactive Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f0f4f8;
+            overflow: hidden;
+        }
+        .character-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 300px;
+            width: 100%;
+            margin-bottom: -20px;
+        }
+        .character {
+            position: relative;
+            width: 60px;
+            background-color: #3b82f6;
+            border-radius: 30px 30px 0 0;
+            transition: height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.5s ease;
+            height: 100px;
+            transform-origin: bottom;
+        }
+        .head {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            width: 60px;
+            height: 60px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s ease;
+        }
+        .eyes {
+            display: flex;
+            gap: 10px;
+        }
+        .eye {
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            border-radius: 50%;
+            position: relative;
+        }
+        .pupil {
+            width: 6px;
+            height: 6px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* 状态样式 */
+        .character.stretch {
+            height: 200px;
+        }
+        .character.look-away .head {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- 小人区域 -->
+    <div class="character-container max-w-md">
+        <div id="char1" class="character bg-blue-500">
+            <div class="head bg-blue-500">
+                <div class="eyes">
+                    <div class="eye"><div class="pupil"></div></div>
+                    <div class="eye"><div class="pupil"></div></div>
+                </div>
+            </div>
+        </div>
+        <div id="char2" class="character bg-green-500">
+            <div class="head bg-green-500">
+                <div class="eyes">
+                    <div class="eye"><div class="pupil"></div></div>
+                    <div class="eye"><div class="pupil"></div></div>
+                </div>
+            </div>
+        </div>
+        <div id="char3" class="character bg-purple-500">
+            <div class="head bg-purple-500">
+                <div class="eyes">
+                    <div class="eye"><div class="pupil"></div></div>
+                    <div class="eye"><div class="pupil"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录表单 -->
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md z-10">
+        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">欢迎回来</h1>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">账号</label>
+                <input type="text" id="username" placeholder="请输入账号" 
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+            </div>
+            
+            <div class="relative">
+                <label class="block text-sm font-medium text-gray-700">密码</label>
+                <input type="password" id="password" placeholder="请输入密码" 
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                <button id="togglePassword" class="absolute right-3 top-9 text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </button>
+            </div>
+
+            <button class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors">
+                登录
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const characters = [
+            document.getElementById('char1'),
+            document.getElementById('char2'),
+            document.getElementById('char3')
+        ];
+        const pupils = document.querySelectorAll('.pupil');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        // 眼睛跟随鼠标
+        document.addEventListener('mousemove', (e) => {
+            pupils.forEach(pupil => {
+                const rect = pupil.getBoundingClientRect();
+                const eyeX = rect.left + rect.width / 2;
+                const eyeY = rect.top + rect.height / 2;
+                const angle = Math.atan2(e.clientY - eyeY, e.clientX - eyeX);
+                const distance = Math.min(3, Math.hypot(e.clientX - eyeX, e.clientY - eyeY) / 50);
+                
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                
+                pupil.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+            });
+        });
+
+        // 账号输入逻辑：随机一个小人伸脖子
+        let activeRandomChar = null;
+        usernameInput.addEventListener('focus', () => {
+            resetCharacters();
+            activeRandomChar = characters[Math.floor(Math.random() * characters.length)];
+            activeRandomChar.classList.add('stretch');
+        });
+        usernameInput.addEventListener('blur', () => {
+            if (activeRandomChar) {
+                activeRandomChar.classList.remove('stretch');
+                activeRandomChar = null;
+            }
+        });
+
+        // 密码输入逻辑
+        passwordInput.addEventListener('focus', () => {
+            resetCharacters();
+            updatePasswordState();
+        });
+        passwordInput.addEventListener('blur', () => {
+            resetCharacters();
+        });
+
+        // 切换显示/隐藏
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            
+            // 更新图标 (简单演示，仅切换路径或使用不同svg)
+            if (isPassword) {
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />';
+            } else {
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+            }
+
+            if (document.activeElement === passwordInput) {
+                updatePasswordState();
+            }
+        });
+
+        function updatePasswordState() {
+            const isHidden = passwordInput.type === 'password';
+            characters.forEach(char => {
+                char.classList.add('stretch');
+                if (isHidden) {
+                    char.classList.add('look-away');
+                } else {
+                    char.classList.remove('look-away');
+                }
+            });
+        }
+
+        function resetCharacters() {
+            characters.forEach(char => {
+                char.classList.remove('stretch', 'look-away');
+            });
+        }
+    </script>
+</body>
+</html>
