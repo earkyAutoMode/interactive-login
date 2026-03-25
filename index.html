@@ -192,17 +192,15 @@
                 eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
             }
 
-            if (documeninecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+            if (documen 3l18 18" />';
+            } else {
+                // 切换到隐藏图标（目前是明文，点击后变密文，图标显示“正常眼”）
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7" />';
             }
 
-            // 无论当前是否获得焦点，都更新状态（如果没焦点，resetCharacters 会在下次 focus 时重置）
-            // 但通常点击这个按钮时，我们希望小人能立即反应
+            // 无论焦点是否在输入框，点击切换时都更新小人状态并保持伸脖子
             updatePasswordState();
         });
 
         function updatePasswordState() {
-            const isHidden = passwordInput.type === 'password';
-            characters.forEach(char => {
-                char.classList.add('stretch');
-                if (isHidden) {
-                 
+    
