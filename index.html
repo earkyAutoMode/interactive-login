@@ -192,9 +192,12 @@
                 eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
             }
 
-            if (document.activeElement === passwordInput) {
-                updatePasswordState();
+            if (documeninecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
             }
+
+            // 无论当前是否获得焦点，都更新状态（如果没焦点，resetCharacters 会在下次 focus 时重置）
+            // 但通常点击这个按钮时，我们希望小人能立即反应
+            updatePasswordState();
         });
 
         function updatePasswordState() {
@@ -202,18 +205,4 @@
             characters.forEach(char => {
                 char.classList.add('stretch');
                 if (isHidden) {
-                    char.classList.add('look-away');
-                } else {
-                    char.classList.remove('look-away');
-                }
-            });
-        }
-
-        function resetCharacters() {
-            characters.forEach(char => {
-                char.classList.remove('stretch', 'look-away');
-            });
-        }
-    </script>
-</body>
-</html>
+                 
